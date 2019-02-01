@@ -134,7 +134,7 @@ Flight::route('DELETE /@module/@name/@id/@sub_name/@line', function($module, $na
 	else { Flight::json(array('message'=>'NOT_FOUND DELETE #5', 'file'=>'./'.$module.'/'.$name.'_'.$sub_name.'_delete.php' ), 501); }
 });
 
-Flight::map('error', function(Exception $ex){
+Flight::map('error', function($ex){
 	Flight::json(array('message'=>basename($ex->getFile()).': line '.$ex->getLine().': '.$ex->getMessage()), 500);
 });
 
