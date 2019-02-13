@@ -1,6 +1,6 @@
 # flightphp-skeleton for pure REST API
 
-This project aims to provide a scalable skeleton to build RESTful APIs based on [FlightPhP](https://github.com/mikecao/flight) returning to the client only JSON objects.
+This project aims to provide a skeleton to build scalable RESTful APIs based on [FlightPhP](https://github.com/mikecao/flight) returning to the client only JSON objects.
 
 ## Getting started
 1. Create the folder where the API will be located
