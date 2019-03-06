@@ -1,6 +1,8 @@
 <?php
 	$now = Date('Y-m-d H:i:s');
 	$DB = Flight::get('DB');
+	$o_user = Flight::get('o_user');
+	$user_right = Flight::get('user_right');
 	$r = Flight::request();
 	$data = $r->data->getData();
 
@@ -19,8 +21,8 @@
 			Flight::json(array('data'=>array(	'message'=>'created', 
 												'time'=>$now,
 												'rowCount'=>$query->rowCount(),
-												'id'=>$item_id
-											)));
+												'id'=>intval($item_id)
+											)), 201);
 		} else {
 			Flight::json(array('message'=>implode(' ',array_slice($query->errorInfo(), 2))), 500);
 		}

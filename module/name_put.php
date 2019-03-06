@@ -1,6 +1,8 @@
 <?php
 	$now = Date('Y-m-d H:i:s');
 	$DB = Flight::get('DB');
+	$o_user = Flight::get('o_user');
+	$user_right = Flight::get('user_right');
 	$r = Flight::request();
 	$data = $r->data->getData();
 
