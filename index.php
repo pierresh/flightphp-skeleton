@@ -135,6 +135,18 @@ Flight::route('DELETE /@module/@name/@id/@sub_name/@line', function($module, $na
 });
 
 Flight::map('error', function($ex){
+	// Need to record log of the error meet by the API
+
+	global $DB;
+	global $o_user;
+
+	$result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message) 
+							VALUES (NOW(), :user_id, :error_file, :error_message);" );
+	$result->bindvalue(':user_id', $o_user->user_id, PDO::PARAM_INT);
+	$result->bindvalue(':error_file', basename($ex->getFile()), PDO::PARAM_STR);
+	$result->bindvalue(':error_message', 'line '.$ex->getLine().': '.trim($ex->getMessage()), PDO::PARAM_STR);
+	$result->execute();
+
 	Flight::json(array('message'=>basename($ex->getFile()).': line '.$ex->getLine().': '.$ex->getMessage()), 500);
 });
 

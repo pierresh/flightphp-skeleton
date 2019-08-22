@@ -14,16 +14,16 @@
 		Flight::json(array('message'=>'BAD_REQUEST', 'key'=>'line'), 400);
 	} else {
 
-		$result = $DB->prepare("DELETE
+		$query = $DB->prepare("DELETE
 								FROM my_items_details
 								WHERE my_items_details.details_line = :line;;");
-		$result->bindvalue(':line', $line, PDO::PARAM_INT); 
-		if ($result->execute()) { 
+		$query->bindvalue(':line', $line, PDO::PARAM_INT); 
+		if ($query->execute()) { 
 			Flight::json(array('data'=>array(	'message'=>'deleted',
 												'time'=>$now
 											)));
 		} else { 
-			Flight::json(array(	'error'=>implode(' ',array_slice($result->errorInfo(), 2))), 500);
+			Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
 		}
 			
 	}

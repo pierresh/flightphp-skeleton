@@ -27,7 +27,7 @@
 												'rowCount'=>$query->rowCount()
 											)));
 		} else {
-			Flight::json(array('message'=>implode(' ',array_slice($query->errorInfo(), 2))), 500);
+			Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
 		}
 		
 	}
