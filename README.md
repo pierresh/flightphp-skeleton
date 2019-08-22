@@ -32,3 +32,7 @@ The same logic can be applied to the other routes / methods, per example:
 | DELETE [path_to_api]/module/items/1/details/2 | ./module/items_details_delete.php |
 
 The folder `module` should be duplicated and renamed according to your routes, as well as the files inside.
+
+### :heart: Like it? :heart:
+
+:star: Star it! :star:
