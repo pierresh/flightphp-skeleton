@@ -52,86 +52,12 @@ Flight::route('/', function(){
     echo 'Welcome to Flight PHP skeleton!';
 });
 
-Flight::route('GET /@module/@name', function($module, $name){ 
-	if (file_exists('./'.$module.'/'.$name.'_get.php')) { require_once('./'.$module.'/'.$name.'_get.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND GET #2', 'more'=>'./'.$module.'/'.$name.'_get.php'), 501); }
-});
-Flight::route('GET /@module/@name/@id', function($module, $name, $id){ 
-	if (file_exists('./'.$module.'/'.$name.'_get.php')) { require_once('./'.$module.'/'.$name.'_get.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND GET #3', 'url'=>'./'.$module.'/'.$name.'_get.php'), 501); }
-});
-Flight::route('GET /@module/@name/@id/@sub_name', function($module, $name, $id, $sub_name){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_get.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_get.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND GET #4', 'url'=>'./'.$module.'/'.$name.'_'.$sub_name.'_get.php'), 501); }
-});
-
-Flight::route('GET /@module/@name/@id/@sub_name/@line', function($module, $name, $id, $sub_name, $line){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_get.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_get.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND GET #5', 'url'=>'./'.$module.'/'.$name.'_'.$sub_name.'_get.php'), 501); }
-});
-
-Flight::route('POST /@name/', function($name){ 
-	if (file_exists('./'.$name.'_post.php')) { require_once('./'.$name.'_post.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND POST #1'), 501); }
-});
-Flight::route('POST /@module/@name/', function($module, $name){ 
-	if (file_exists('./'.$module.'/'.$name.'_post.php')) { require_once('./'.$module.'/'.$name.'_post.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND POST #2'), 501); }
-});
-Flight::route('POST /@module/@name/@id', function($module, $name, $id){ 
-	if (file_exists('./'.$module.'/'.$name.'_post.php')) { require_once('./'.$module.'/'.$name.'_post.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND POST #3'), 501); }
-});
-Flight::route('POST /@module/@name/@id/@sub_name', function($module, $name, $id, $sub_name){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_post.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_post.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND POST #4', 'url'=>'./'.$module.'/'.$name.'_'.$sub_name.'_post.php'), 501); }
-});
-
-
-Flight::route('PUT /@module/@name/', function($module, $name){ 
-	if (file_exists('./'.$module.'/'.$name.'_put.php')) { require_once('./'.$module.'/'.$name.'_put.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND PUT #2', 'url'=>'./'.$module.'/'.$name.'_put.php'), 501); }
-});
-Flight::route('PUT /@module/@name/@id', function($module, $name, $id){ 
-	if (file_exists('./'.$module.'/'.$name.'_put.php')) { require_once('./'.$module.'/'.$name.'_put.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND PUT #3', 'url'=>'./'.$module.'/'.$name.'_put.php'), 501); }
-});
-Flight::route('PUT /@module/@name/@id/@sub_name', function($module, $name, $id, $sub_name){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_put.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_put.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND PUT #4', 'url'=>'./'.$module.'/'.$name.'_'.$sub_name.'_put.php'), 501); }
-});
-Flight::route('PUT /@module/@name/@id/@sub_name/@line', function($module, $name, $id, $sub_name, $line){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_put.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_put.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND PUT #5', 'url'=>'./'.$module.'/'.$name.'_'.$sub_name.'_put.php'), 501); }
-});
-
-
-Flight::route('PATCH /@module/@name/@id', function($module, $name, $id){ 
-	if (file_exists('./'.$module.'/'.$name.'_patch.php')) { require_once('./'.$module.'/'.$name.'_patch.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND PATCH #3', 'key'=>'./'.$module.'/'.$name.'_patch.php'), 501); }
-});
-Flight::route('PATCH /@module/@name/@id/@sub_name', function($module, $name, $id, $sub_name){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_patch.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_patch.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND PATCH #4', 'key'=>'./'.$module.'/'.$name.'_'.$sub_name.'_patch.php' ), 501); }
-});
-
-Flight::route('PATCH /@module/@name/@id/@sub_name/@line', function($module, $name, $id, $sub_name, $line){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_patch.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_patch.php'); }
-	else { Flight::json(array( 'message'=>'NOT_FOUND PATCH #5', 'key'=>'./'.$module.'/'.$name.'_'.$sub_name.'_patch.php' ), 501); }
-});
-
-Flight::route('DELETE /@name/', function($name){ 
-	if (file_exists('./'.$name.'_delete.php')) { require_once('./'.$name.'_delete.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND DELETE #1'), 501); }
-});
-Flight::route('DELETE /@module/@name/@id', function($module, $name, $id){ 
-	if (file_exists('./'.$module.'/'.$name.'_delete.php')) { require_once('./'.$module.'/'.$name.'_delete.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND DELETE #3', 'file'=>'./'.$module.'/'.$name.'_delete.php' ), 501); }
-});
-
-Flight::route('DELETE /@module/@name/@id/@sub_name/@line', function($module, $name, $id, $sub_name, $line){ 
-	if (file_exists('./'.$module.'/'.$name.'_'.$sub_name.'_delete.php')) { require_once('./'.$module.'/'.$name.'_'.$sub_name.'_delete.php'); }
-	else { Flight::json(array('message'=>'NOT_FOUND DELETE #5', 'file'=>'./'.$module.'/'.$name.'_'.$sub_name.'_delete.php' ), 501); }
+Flight::route('GET|POST|PUT|DELETE|PATCH /@module/@name(/@id(/@sub_name(/@line)))', function($module, $name, $id, $sub_name, $line){
+	$request = Flight::request();
+	if ($line != '' || $sub_name != '') { $api_file = './'.$module.'/'.$name.'_'.$sub_name.'_'.strtolower($request->method).'.php'; }
+	else { $api_file = './'.$module.'/'.$name.'_'.strtolower($request->method).'.php'; }
+	if (file_exists($api_file)) { require_once $api_file; }
+	else { Flight::json(array('error'=>array('code'=>501, 'message'=>'NOT_FOUND '.$request->method, 'more'=>$api_file)), 501); }
 });
 
 Flight::map('error', function($ex){
