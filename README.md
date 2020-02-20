@@ -9,8 +9,8 @@ This project aims to provide a skeleton to build scalable RESTful APIs based on 
 
 Then, logics about authorization/user rights/database connection should be defined in the file `index.php` (from line 18 to 49). In this skeleton, 3 variables would be created:
 1. **$DB** is the database instance 
-2. **$o_user** is the object refering to the user connected
-3. **$user_right** is an array refering to the various user right of the connnected user. The index of array is the API / Page number used to distinguish user rights per route
+2. **$o_user** is the object referring to the user connected
+3. **$user_right** is an array referring to the various user right of the connected user. The index of array is the API / Page number used to distinguish user rights per route
 
 In order to be easily scalable, the methods should be saved in files named and placed according to the route. Per example, let's consider the following route:
 
@@ -28,6 +28,7 @@ The same logic can be applied to the other routes / methods, per example:
 | POST [path_to_api]/module/items | ./module/items_post.php |
 | POST [path_to_api]/module/items/1/details | ./module/items_details_post.php |
 | PUT [path_to_api]/module/items/1 | ./module/items_put.php |
+| PATCH [path_to_api]/module/items/1 | ./module/items_patch.php |
 | DELETE [path_to_api]/module/items/1 | ./module/items_delete.php |
 | DELETE [path_to_api]/module/items/1/details/2 | ./module/items_details_delete.php |
 
