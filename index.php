@@ -26,24 +26,30 @@ require './vendor/autoload.php';
 	$headers = getallheaders();
 	if (isSet($headers['Authorization'])) {
 		list($jwt) = sscanf($headers['Authorization'], 'Bearer %s');
-		require_once('./db_connect.php'); // db_connect contains the 4 functions DBconnect, ObjectUser, UserRights, checkSession
+		require_once './db_connect.php'; // db_connect contains the 4 functions DBconnect, ObjectUser, UserRights, checkSession
 
-		$DB = DBconnect($jwt);
-		Flight::set('DB', $DB);
-		
-		if ($DB != false) {
+		// DBconnect return true if the connection is successul and the database connection is then registered as folllow:
+		// Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
+
+		if (DBconnect($jwt) != false) {
 			$o_user = ObjectUser($jwt);
 			$user_right = UserRights($o_user->role);
 
 			Flight::set('o_user', $o_user);
 			Flight::set('user_right', $user_right);
 		} else {
+
+			// checkSession is used to determine why the session is expired (ie. connected from another device)
 			$session = checkSession($jwt);
 			Flight::json(array(	'message'=>'SESSION_EXPIRED',
 								'keys'=>$session
 							), 401);
 			die();
 		}
+	} else {
+		// In case there is a login, we can redirect to the file that manage the authentification
+		require_once './login.php';
+		die();
 	}
 
 /* ************ */
@@ -63,10 +69,10 @@ Flight::route('GET|POST|PUT|DELETE|PATCH /@module/@name(/@id(/@sub_name(/@line))
 Flight::map('error', function($ex){
 	// Need to record log of the error meet by the API
 
-	global $DB;
-	global $o_user;
+	$DB = Flight::db();
+	$o_user = Flight::get('o_user');
 
-	$result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message) 
+	$result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message)
 							VALUES (NOW(), :user_id, :error_file, :error_message);" );
 	$result->bindvalue(':user_id', $o_user->user_id, PDO::PARAM_INT);
 	$result->bindvalue(':error_file', basename($ex->getFile()), PDO::PARAM_STR);

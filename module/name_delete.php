@@ -1,6 +1,6 @@
 <?php
 	$now = Date('Y-m-d H:i:s');
-	$DB = Flight::get('DB');
+	$DB = Flight::db();
 	$r = Flight::request();
 	$data = $r->data->getData();
 
