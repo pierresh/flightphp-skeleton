@@ -4,9 +4,7 @@
 	$o_user = Flight::get('o_user');
 	$user_right = Flight::get('user_right');
 
-	if ($DB == false) {
-		Flight::json(array('message'=>'SESSION_EXPIRED'), 401);
-	} else if ($user_right[0]] < 1) {
+	if ($user_right[0] < 1) {
 		Flight::json(array('message'=>'FORBIDDEN'), 403);
 	} else if (isSet($id)) {
 		$query = $DB->prepare("	SELECT *
@@ -34,8 +32,8 @@
 		$itemsPerPage = 15;
 		$offset = (15*($page-1));
 
-		$query = $DB->prepare("	SELECT 	item_id AS id, 
-										item_name AS name 
+		$query = $DB->prepare("	SELECT 	item_id AS id,
+										item_name AS name
 								FROM my_items
 								WHERE item_id LIKE :q
 								OR item_name LIKE :q
@@ -50,8 +48,8 @@
 				$items[] = $row;
 			}
 
-			Flight::json(array('data'=>array('pageIndex'=>$page, 
-											 'itemsPerPage'=>$itemsPerPage, 
+			Flight::json(array('data'=>array('pageIndex'=>$page,
+											 'itemsPerPage'=>$itemsPerPage,
 											 'items'=>$items,
 											 'rowCount'=>$query->rowCount()
 											)));

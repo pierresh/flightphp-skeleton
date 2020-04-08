@@ -10,7 +10,7 @@
 	// 1. field (which column of the table will be modified)
 	// 2. value (the new value for that field)
 
-	if ($user_right[0]] < 2) {
+	if ($user_right[0] < 2) {
 		Flight::json(array('message'=>'FORBIDDEN'), 403);
 	} else if (!isSet($id)) {
 		Flight::json(array('message'=>'BAD REQUEST', 'key'=>'id'), 400);
@@ -34,20 +34,20 @@
 		}
 
 		// The query is executed only if the $data['field'] has been found in $allowed
-		$query = $DB->prepare(" UPDATE my_items 
+		$query = $DB->prepare(" UPDATE my_items
 								SET ".$allowed[$index]." = :value
 								WHERE item_id = :item_id;");
 
 		$query->bindParam(':item_id', $id, PDO::PARAM_INT);
 		$query->bindParam(':value', $data['value'], PDO::PARAM_STR);
 		if ($query->execute()) {
-			Flight::json(array('data'=>array(	'message'=>'updated', 
+			Flight::json(array('data'=>array(	'message'=>'updated',
 												'time'=>$now,
 												'rowCount'=>$query->rowCount()
 											)));
 		} else {
 			Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
 		}
-		
+
 	}
 ?>
