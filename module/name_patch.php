@@ -38,16 +38,25 @@
 								SET ".$allowed[$index]." = :value
 								WHERE item_id = :item_id;");
 
-		$query->bindParam(':item_id', $id, PDO::PARAM_INT);
-		$query->bindParam(':value', $data['value'], PDO::PARAM_STR);
-		if ($query->execute()) {
-			Flight::json(array('data'=>array(	'message'=>'updated',
-												'time'=>$now,
-												'rowCount'=>$query->rowCount()
-											)));
-		} else {
-			Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
+		$results = array();
+		$ids = explode(',', $id);
+
+		foreach ($ids as $value){
+			$query->bindParam(':item_id', $value, PDO::PARAM_INT);
+			$query->bindParam(':value', $data['value'], PDO::PARAM_STR);
+			if (!$query->execute()) {
+				Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
+			} else {
+				if ($query->rowCount() > 0) {
+					$results[] = $value;
+				}
+			}
 		}
+
+		Flight::json(array('data'=>array(	'message'=>'updated',
+											'results'=>$results,
+											'time'=>$now
+										)));
 
 	}
 ?>

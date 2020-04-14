@@ -8,7 +8,7 @@ This project aims to provide a skeleton to build scalable RESTful APIs based on 
 3. Put this skeleton in that folder (the file `index.php` and the folder `module` should put beside the folder `vendor`)
 
 Then, logics about authorization/user rights/database connection should be defined in the file `index.php` (from line 18 to 49). In this skeleton, 3 variables would be created:
-1. **$DB** is the database instance 
+1. **$DB** is the database instance
 2. **$o_user** is the object referring to the user connected
 3. **$user_right** is an array referring to the various user right of the connected user. The index of array is the API / Page number used to distinguish user rights per route
 
@@ -29,8 +29,11 @@ The same logic can be applied to the other routes / methods, per example:
 | POST [path_to_api]/module/items/1/details | ./module/items_details_post.php |
 | PUT [path_to_api]/module/items/1 | ./module/items_put.php |
 | PATCH [path_to_api]/module/items/1 | ./module/items_patch.php |
+| PATCH [path_to_api]/module/items/1,3,5 | ./module/items_patch.php |
 | DELETE [path_to_api]/module/items/1 | ./module/items_delete.php |
+| DELETE [path_to_api]/module/items/1,3,5 | ./module/items_delete.php |
 | DELETE [path_to_api]/module/items/1/details/2 | ./module/items_details_delete.php |
+| DELETE [path_to_api]/module/items/1/details/2,3,4 | ./module/items_details_delete.php |
 
 The folder `module` should be duplicated and renamed according to your routes, as well as the files inside.
 

@@ -12,17 +12,28 @@
 		Flight::json(array('message'=>'BAD_REQUEST', 'key'=>'line'), 400);
 	} else {
 
-		$query = $DB->prepare("DELETE
+		$query = $DB->prepare("	DELETE
 								FROM my_items_details
-								WHERE my_items_details.details_line = :line;;");
-		$query->bindvalue(':line', $line, PDO::PARAM_INT);
-		if ($query->execute()) {
-			Flight::json(array('data'=>array(	'message'=>'deleted',
-												'time'=>$now
-											)));
-		} else {
-			Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
+								WHERE my_items_details.details_line = :line;");
+
+		$results = array();
+		$lines = explode(',', $line);
+
+		foreach ($lines as $value){
+			$query->bindvalue(':line', $value, PDO::PARAM_INT);
+			if (!$query->execute()) {
+				Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
+			} else {
+				if ($query->rowCount() > 0) {
+					$results[] = $value;
+				}
+			}
 		}
+
+		Flight::json(array('data'=>array(	'message'=>'deleted',
+											'results'=>$results,
+											'time'=>$now
+										)));
 
 	}
 
