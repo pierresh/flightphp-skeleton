@@ -16,10 +16,11 @@
 				Flight::json(array(	'message'=>'NOT_FOUND',
 									'key'=>$id
 				), 404);
+				die();
 			}
 
 			$item = $query->fetch(PDO::FETCH_OBJ);
-
+			$item->item_id = intval($item->item_id);
 			Flight::json(array('data'=>array('item'=>$item)));
 		} else {
 			Flight::error(new Exception(implode(' ',array_slice($query->errorInfo(), 2))));
@@ -45,6 +46,7 @@
 		if ($query->execute()) {
 			$items = array();
 			while ($row = $query->fetch(PDO::FETCH_OBJ)) {
+				$item->id = intval($item->id);
 				$items[] = $row;
 			}
 
