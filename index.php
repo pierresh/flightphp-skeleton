@@ -69,6 +69,15 @@ Flight::route('GET|POST|PUT|DELETE|PATCH /@module/@name(/@id(/@sub_name(/@line))
         $api_file = './' . $module . '/' . $name . '_' . strtolower($request->method) . '.php';
     }
     if (file_exists($api_file)) {
+
+		$now = Date('Y-m-d H:i:s');
+		$DB = Flight::db();
+		$r = Flight::request();
+		$data = $r->data->getData();
+
+		$o_user = Flight::get('o_user');
+		$user_right = Flight::get('user_right');
+
         require_once $api_file;
     } else {
         Flight::json(array('error' => array('code' => 501, 'message' => 'NOT_FOUND ' . $request->method, 'more' => $api_file)), 501);

@@ -1,10 +1,5 @@
 <?php
 
-$now = Date('Y-m-d H:i:s');
-$DB = Flight::db();
-$r = Flight::request();
-$data = $r->data->getData();
-
 if ($user_right[0] < 2) {
     Flight::json(array('message' => 'FORBIDDEN'), 403);
 } elseif (!isset($id)) {

@@ -1,12 +1,5 @@
 <?php
 
-$now = Date('Y-m-d H:i:s');
-$DB = Flight::db();
-$o_user = Flight::get('o_user');
-$user_right = Flight::get('user_right');
-$r = Flight::request();
-$data = $r->data->getData();
-
 // Input data should be:
 // 1. field (which column of the table will be modified)
 // 2. value (the new value for that field)
