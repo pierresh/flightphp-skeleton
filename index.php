@@ -1,19 +1,23 @@
 <?php
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
-    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Max-Age: 86400');
+	header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+	header('Access-Control-Allow-Credentials: true');
+	header('Access-Control-Max-Age: 86400');
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS");
-    }
-    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-    }
-    exit(0);
+	if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+		header(
+			'Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS'
+		);
+	}
+	if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+		header(
+			"Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}"
+		);
+	}
+	exit(0);
 }
 
 require './vendor/autoload.php';
@@ -58,50 +62,66 @@ require './vendor/autoload.php';
 /* ************ */
 
 Flight::route('/', function () {
-    echo 'Welcome to Flight PHP skeleton!';
+	echo 'Welcome to Flight PHP skeleton!';
 });
 
-Flight::route('GET|POST|PUT|DELETE|PATCH /@module/@name(/@id(/@sub_name(/@line)))', function ($module, $name, $id, $sub_name, $line) {
-    $request = Flight::request();
-    if ($line != '' || $sub_name != '') {
-        $api_file = './' . $module . '/' . $name . '_' . $sub_name . '_' . strtolower($request->method) . '.php';
-    } else {
-        $api_file = './' . $module . '/' . $name . '_' . strtolower($request->method) . '.php';
-    }
-    if (file_exists($api_file)) {
+Flight::route(
+	'GET|POST|PUT|DELETE|PATCH /@module/@name(/@id(/@sub_name(/@line)))',
+	function ($module, $name, $id, $sub_name, $line) {
+		$request = Flight::request();
+		if ($line != '' || $sub_name != '') {
+			$api_file = './' . $module . '/' . $name . '_' . $sub_name . '_' . strtolower($request->method) . '.php';
+		} else {
+			$api_file = './' . $module . '/' . $name . '_' . strtolower($request->method) . '.php';
+		}
+		if (file_exists($api_file)) {
+			$now = Date('Y-m-d H:i:s');
+			$DB = Flight::db();
+			$r = Flight::request();
+			$data = $r->data->getData();
 
-		$now = Date('Y-m-d H:i:s');
-		$DB = Flight::db();
-		$r = Flight::request();
-		$data = $r->data->getData();
+			$o_user = Flight::get('o_user');
+			$user_right = Flight::get('user_right');
 
-		$o_user = Flight::get('o_user');
-		$user_right = Flight::get('user_right');
-
-        require_once $api_file;
-    } else {
-        Flight::json(array('error' => array('code' => 501, 'message' => 'NOT_FOUND ' . $request->method, 'more' => $api_file)), 501);
-    }
-});
+			require_once $api_file;
+		} else {
+			Flight::json(
+				[
+					'error' => [
+						'code' => 501,
+						'message' => 'NOT_FOUND ' . $request->method,
+						'more' => $api_file,
+					],
+				],
+				501
+			);
+		}
+	}
+);
 
 Flight::map('error', function ($ex) {
-    // Need to record log of the error meet by the API
+	// Need to record log of the error meet by the API
 
-    $DB = Flight::db();
-    $o_user = Flight::get('o_user');
+	$DB = Flight::db();
+	$o_user = Flight::get('o_user');
 
-    $result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message)
+	$result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message)
 							VALUES (NOW(), :user_id, :error_file, :error_message);");
-    $result->bindvalue(':user_id', $o_user->user_id, PDO::PARAM_INT);
-    $result->bindvalue(':error_file', basename($ex->getFile()), PDO::PARAM_STR);
-    $result->bindvalue(':error_message', 'line ' . $ex->getLine() . ': ' . trim($ex->getMessage()), PDO::PARAM_STR);
-    $result->execute();
+	$result->bindvalue(':user_id', $o_user->user_id, PDO::PARAM_INT);
+	$result->bindvalue(':error_file', basename($ex->getFile()), PDO::PARAM_STR);
+	$result->bindvalue(':error_message', 'line ' . $ex->getLine() . ': ' . trim($ex->getMessage()), PDO::PARAM_STR);
+	$result->execute();
 
-    Flight::json(array('message' => basename($ex->getFile()) . ': line ' . $ex->getLine() . ': ' . $ex->getMessage()), 500);
+	Flight::json(
+		[
+			'message' => basename($ex->getFile()) . ': line ' . $ex->getLine() . ': ' . $ex->getMessage(),
+		],
+		500
+	);
 });
 
 Flight::map('notFound', function () {
-    Flight::json(array('message' => 'ROUTE NOT FOUND'), 404);
+	Flight::json(['message' => 'ROUTE NOT FOUND'], 404);
 });
 
 Flight::start();
