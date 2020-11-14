@@ -121,7 +121,8 @@ Flight::map('error', function ($ex) {
 });
 
 Flight::map('notFound', function () {
-	Flight::json(['message' => 'ROUTE NOT FOUND'], 404);
+    Flight::json('RESOURCE NOT FOUND', 404);
+    exit();
 });
 
 Flight::start();

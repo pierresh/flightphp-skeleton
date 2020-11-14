@@ -11,17 +11,8 @@ if ($user_right[0] < 1) {
 		Flight::error(
 			new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
 		);
-	}
-
-	if ($query->rowCount() == 0) {
-		Flight::json(
-			[
-				'message' => 'NOT_FOUND',
-				'key' => $id,
-			],
-			404
-		);
-		die();
+	} elseif ($query->rowCount() == 0) {
+		Flight::notFound();
 	}
 
 	$item = $query->fetch(PDO::FETCH_OBJ);
