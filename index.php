@@ -36,7 +36,12 @@ require './vendor/autoload.php';
         require_once './db_connect.php'; // db_connect contains the 4 functions DBconnect, ObjectUser, UserRights, checkSession
 
         // DBconnect return true if the connection is successul and the database connection is then registered as folllow:
-        // Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
+        // try {
+        //	Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
+		// }
+		// catch(Exception $e) {
+		//	Flight::error($e);
+		// }
 
         if (DBconnect($jwt) != false) {
             $o_user = ObjectUser($jwt);
@@ -112,12 +117,8 @@ Flight::map('error', function ($ex) {
 	$result->bindvalue(':error_message', 'line ' . $ex->getLine() . ': ' . trim($ex->getMessage()), PDO::PARAM_STR);
 	$result->execute();
 
-	Flight::json(
-		[
-			'message' => basename($ex->getFile()) . ': line ' . $ex->getLine() . ': ' . $ex->getMessage(),
-		],
-		500
-	);
+	Flight::json('API ERROR', 500);
+	exit();
 });
 
 Flight::map('notFound', function () {

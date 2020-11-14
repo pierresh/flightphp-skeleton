@@ -22,7 +22,11 @@ if ($user_right[0] < 1) {
 	if (!isset($_GET['p'])) {
 		$page = 1;
 	} else {
-		$page = $_GET['p'];
+		$page = intval($_GET['p']);
+	}
+
+	if ($page < 1) {
+		$page = 1;
 	}
 
 	if (!isset($_GET['q'])) {
