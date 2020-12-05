@@ -109,12 +109,15 @@ Flight::map('error', function ($ex) {
 
 	$DB = Flight::db();
 	$o_user = Flight::get('o_user');
+	$r = Flight::request();
 
-	$result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message)
-							VALUES (NOW(), :user_id, :error_file, :error_message);");
+	$result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message, error_url, error_data)
+							VALUES (NOW(), :user_id, :error_file, :error_message, :error_url, :error_data);");
 	$result->bindvalue(':user_id', $o_user->user_id, PDO::PARAM_INT);
 	$result->bindvalue(':error_file', basename($ex->getFile()), PDO::PARAM_STR);
 	$result->bindvalue(':error_message', 'line ' . $ex->getLine() . ': ' . trim($ex->getMessage()), PDO::PARAM_STR);
+	$result->bindvalue(':error_url', $r->url, PDO::PARAM_STR);
+	$result->bindvalue(':error_data', json_encode($r->data->getData()), PDO::PARAM_STR);
 	$result->execute();
 
 	Flight::json('API ERROR', 500);
