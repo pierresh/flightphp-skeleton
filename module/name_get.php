@@ -1,7 +1,7 @@
 <?php
 
 if ($user_right[0] < 1) {
-	Flight::json(['message' => 'FORBIDDEN'], 403);
+	Flight::forbidden();
 } elseif (isset($id)) {
 	$query = $DB->prepare("	SELECT *
 							FROM my_items

@@ -1,37 +1,37 @@
 <?php
 
 if ($user_right[0] < 2) {
-	Flight::json(['message' => 'FORBIDDEN'], 403);
+	Flight::forbidden();
 } elseif (!isset($id)) {
-	Flight::json(['message' => 'BAD_REQUEST', 'key' => 'id'], 400);
+	Flight::badRequest('id');
 } elseif (!isset($line)) {
-	Flight::json(['message' => 'BAD_REQUEST', 'key' => 'line'], 400);
-} else {
-	$query = $DB->prepare("	DELETE
-							FROM my_items_details
-							WHERE my_items_details.details_line = :line;");
+	Flight::badRequest('line');
+}
 
-	$results = [];
-	$lines = explode(',', $line);
+$query = $DB->prepare("	DELETE
+						FROM my_items_details
+						WHERE my_items_details.details_line = :line;");
 
-	foreach ($lines as $value) {
-		$query->bindvalue(':line', $value, PDO::PARAM_INT);
-		if (!$query->execute()) {
-			Flight::error(
-				new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
-			);
-		} else {
-			if ($query->rowCount() > 0) {
-				$results[] = $value;
-			}
-		}
+$results = [];
+$lines = explode(',', $line);
+
+foreach ($lines as $value) {
+	$query->bindvalue(':line', $value, PDO::PARAM_INT);
+	if (!$query->execute()) {
+		Flight::error(
+			new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
+		);
 	}
 
-	Flight::json([
-		'data' => [
-			'message' => 'deleted',
-			'results' => $results,
-			'time' => $now,
-		],
-	]);
+	if ($query->rowCount() > 0) {
+		$results[] = $value;
+	}
 }
+
+Flight::json([
+	'data' => [
+		'message' => 'deleted',
+		'results' => $results,
+		'time' => $now,
+	],
+]);
