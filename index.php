@@ -124,19 +124,32 @@ Flight::map('error', function ($ex) {
 	exit();
 });
 
-Flight::map('badRequest', function($key){
-    Flight::json(['message' => 'BAD REQUEST', 'key' => $key], 400);
-    exit();
+Flight::map('badRequest', function ($key) {
+	Flight::json(['message' => 'BAD REQUEST', 'key' => $key], 400);
+	exit();
 });
 
-Flight::map('forbidden', function(){
-    Flight::json(['message' => 'FORBIDDEN'], 403);
-    exit();
+Flight::map('forbidden', function () {
+	Flight::json(['message' => 'FORBIDDEN'], 403);
+	exit();
 });
 
 Flight::map('notFound', function () {
-    Flight::json('RESOURCE NOT FOUND', 404);
-    exit();
+	Flight::json('RESOURCE NOT FOUND', 404);
+	exit();
+});
+
+Flight::map('conflict', function ($type, $items) {
+	Flight::json(
+		[
+			'data' => [
+				'type' => $type,
+				'items' => $items,
+			],
+		],
+		409
+	);
+	exit();
 });
 
 Flight::start();
