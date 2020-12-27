@@ -85,6 +85,21 @@ Flight::route(
 			$r = Flight::request();
 			$data = $r->data->getData();
 
+			/**
+			 * Trim all the data received from client (url params and body data)
+			 */
+			$temp = array();
+			foreach ($_GET as $key => $value) {
+				$temp[trim($key)] = trim($value);
+			}
+			$_GET = $temp;
+
+			$temp = array();
+			foreach ($data as $key => $value) {
+				$temp[trim($key)] = trim($value);
+			}
+			$data = $temp;
+
 			$o_user = Flight::get('o_user');
 			$user_right = Flight::get('user_right');
 
