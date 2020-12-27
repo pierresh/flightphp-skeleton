@@ -10,9 +10,7 @@ $query = $DB->prepare("	INSERT INTO my_items (item_name)
 						VALUES (:items_name);");
 $query->bindParam(':items_name', $data['items_name'], PDO::PARAM_STR);
 if (!$query->execute()) {
-	Flight::error(
-		new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
-	);
+	Flight::error(new Exception(errorInfo($query)));
 }
 
 $item_id = $DB->lastInsertId();

@@ -153,3 +153,12 @@ Flight::map('conflict', function ($type, $items) {
 });
 
 Flight::start();
+
+/**
+ * Return the errorInfo of a PDO object
+ * This shorten the handling of SQL errors in every API
+ */
+function errorInfo($query){
+	return implode(' ', array_slice($query->errorInfo(), 2));
+}
+

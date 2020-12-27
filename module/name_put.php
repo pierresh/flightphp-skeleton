@@ -15,9 +15,7 @@ $query = $DB->prepare(" UPDATE my_items
 $query->bindParam(':item_id', $id, PDO::PARAM_INT);
 $query->bindParam(':item_name', $data['item_name'], PDO::PARAM_STR);
 if (!$query->execute()) {
-	Flight::error(
-		new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
-	);
+	Flight::error(new Exception(errorInfo($query)));
 }
 
 Flight::json([

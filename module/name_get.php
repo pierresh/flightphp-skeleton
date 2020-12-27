@@ -8,9 +8,7 @@ if ($user_right[0] < 1) {
 							WHERE my_items.item_id = :item_id;");
 	$query->bindParam(':item_id', $id, PDO::PARAM_INT);
 	if (!$query->execute()) {
-		Flight::error(
-			new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
-		);
+		Flight::error(new Exception(errorInfo($query)));
 	} elseif ($query->rowCount() == 0) {
 		Flight::notFound();
 	}
@@ -46,9 +44,7 @@ if ($user_right[0] < 1) {
 	$query->bindParam(':offset', $offset, PDO::PARAM_INT);
 	$query->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
 	if (!$query->execute()) {
-		Flight::error(
-			new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
-		);
+		Flight::error(new Exception(errorInfo($query)));
 	}
 
 	$items = [];

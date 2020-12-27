@@ -38,9 +38,7 @@ foreach ($ids as $value) {
 	$query->bindParam(':item_id', $value, PDO::PARAM_INT);
 	$query->bindParam(':value', $data['value'], PDO::PARAM_STR);
 	if (!$query->execute()) {
-		Flight::error(
-			new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
-		);
+		Flight::error(new Exception(errorInfo($query)));
 	}
 
 	if ($query->rowCount() > 0) {

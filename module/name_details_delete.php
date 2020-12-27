@@ -22,9 +22,7 @@ $check = $DB->prepare(" SELECT 	fk_item_code,
 						ORDER BY fk_item_code, fk_item_name;");
 $check->bindValue(':item_id', $id, PDO::PARAM_STR);
 if (!$check->execute()) {
-	Flight::error(
-		new Exception(implode(' ', array_slice($check->errorInfo(), 2)))
-	);
+	Flight::error(new Exception(errorInfo($check)));
 }
 
 if ($check->rowCount() > 0) {
@@ -47,9 +45,7 @@ $lines = explode(',', $line);
 foreach ($lines as $value) {
 	$query->bindvalue(':line', $value, PDO::PARAM_INT);
 	if (!$query->execute()) {
-		Flight::error(
-			new Exception(implode(' ', array_slice($query->errorInfo(), 2)))
-		);
+		Flight::error(new Exception(errorInfo($query)));
 	}
 
 	if ($query->rowCount() > 0) {
