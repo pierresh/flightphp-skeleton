@@ -74,11 +74,14 @@ Flight::route(
 	'GET|POST|PUT|DELETE|PATCH /@module/@name(/@id(/@sub_name(/@line)))',
 	function ($module, $name, $id, $sub_name, $line) {
 		$request = Flight::request();
+
+		// prettier-ignore
 		if ($line != '' || $sub_name != '') {
 			$api_file = './' . $module . '/' . $name . '_' . $sub_name . '_' . strtolower($request->method) . '.php';
 		} else {
 			$api_file = './' . $module . '/' . $name . '_' . strtolower($request->method) . '.php';
 		}
+
 		if (file_exists($api_file)) {
 			$now = Date('Y-m-d H:i:s');
 			$DB = Flight::db();
@@ -88,15 +91,23 @@ Flight::route(
 			/**
 			 * Trim all the data received from client (url params and body data)
 			 */
-			$temp = array();
+			$temp = [];
 			foreach ($_GET as $key => $value) {
-				$temp[trim($key)] = trim($value);
+				if (is_string($value)) {
+					$temp[trim($key)] = trim($value);
+				} else {
+					$temp[$key] = $value;
+				}
 			}
 			$_GET = $temp;
 
-			$temp = array();
+			$temp = [];
 			foreach ($data as $key => $value) {
-				$temp[trim($key)] = trim($value);
+				if (is_string($value)) {
+					$temp[trim($key)] = trim($value);
+				} else {
+					$temp[$key] = $value;
+				}
 			}
 			$data = $temp;
 
@@ -126,14 +137,15 @@ Flight::map('error', function ($ex) {
 	$o_user = Flight::get('o_user');
 	$r = Flight::request();
 
-	$result = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message, error_url, error_data)
+	$query = $DB->prepare("INSERT INTO log_error (error_datetime, user_id, error_file, error_message, error_url, error_data)
 							VALUES (NOW(), :user_id, :error_file, :error_message, :error_url, :error_data);");
-	$result->bindvalue(':user_id', $o_user->user_id, PDO::PARAM_INT);
-	$result->bindvalue(':error_file', basename($ex->getFile()), PDO::PARAM_STR);
-	$result->bindvalue(':error_message', 'line ' . $ex->getLine() . ': ' . trim($ex->getMessage()), PDO::PARAM_STR);
-	$result->bindvalue(':error_url', $r->url, PDO::PARAM_STR);
-	$result->bindvalue(':error_data', json_encode($r->data->getData()), PDO::PARAM_STR);
-	$result->execute();
+	$query->bindvalue(':user_id', $o_user->user_id, PDO::PARAM_INT);
+	$query->bindvalue(':error_file', basename($ex->getFile()));
+	// prettier-ignore
+	$query->bindvalue(':error_message', 'line ' . $ex->getLine() . ': ' . trim($ex->getMessage()));
+	$query->bindvalue(':error_url', $r->url);
+	$query->bindvalue(':error_data', json_encode($r->data->getData()));
+	$query->execute();
 
 	Flight::json('API ERROR', 500);
 	exit();
@@ -173,7 +185,7 @@ Flight::start();
  * Return the errorInfo of a PDO object
  * This shorten the handling of SQL errors in every API
  */
-function errorInfo($query){
+function errorInfo($query)
+{
 	return implode(' ', array_slice($query->errorInfo(), 2));
 }
-
