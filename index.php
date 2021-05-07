@@ -30,39 +30,37 @@ require './vendor/autoload.php';
 // 4. get the user rights for the connected user
 
 // Example:
-    $headers = getallheaders();
-    if (isSet($headers['Authorization'])) {
-        list($jwt) = sscanf($headers['Authorization'], 'Bearer %s');
-        require_once './db_connect.php'; // db_connect contains the 4 functions DBconnect, ObjectUser, UserRights, checkSession
+$headers = getallheaders();
+if (!isset($headers['Authorization'])) {
+	// In case there is a login, we can redirect to the file that manage the authentification
+	require_once './login.php';
+	die();
+} else {
+	list($jwt) = sscanf($headers['Authorization'], 'Bearer %s');
+	require_once './db_connect.php'; // db_connect contains the 4 functions DBconnect, ObjectUser, UserRights, checkSession
 
-        // DBconnect return true if the connection is successul and the database connection is then registered as folllow:
-        // try {
-        //	Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
-		// }
-		// catch(Exception $e) {
-		//	Flight::error($e);
-		// }
+	// The database connection is then registered as folllow:
+	// try {
+	//	Flight::register('db', 'PDO', array('mysql:host=localhost;dbname=test','user','pass'));
+	// }
+	// catch(Exception $e) {
+	//	Flight::error($e);
+	// }
 
-        if (DBconnect($jwt) != false) {
-            $o_user = ObjectUser($jwt);
-            $user_right = UserRights($o_user->role);
+	// DBconnect() return true if the connection is successul
+	if (DBconnect($jwt) == false) {
+		// checkSession is used to determine why the session is expired (ie. connected from another device)
+		$session = checkSession($jwt);
+		Flight::json(['message' => 'SESSION_EXPIRED', 'keys' => $session], 401);
+		die();
+	}
 
-            Flight::set('o_user', $o_user);
-            Flight::set('user_right', $user_right);
-        } else {
+	$o_user = ObjectUser($jwt);
+	$user_right = UserRights($o_user->role);
 
-            // checkSession is used to determine why the session is expired (ie. connected from another device)
-            $session = checkSession($jwt);
-            Flight::json(array( 'message'=>'SESSION_EXPIRED',
-                                'keys'=>$session
-                            ), 401);
-            die();
-        }
-    } else {
-        // In case there is a login, we can redirect to the file that manage the authentification
-        require_once './login.php';
-        die();
-    }
+	Flight::set('o_user', $o_user);
+	Flight::set('user_right', $user_right);
+}
 
 /* ************ */
 
@@ -82,40 +80,7 @@ Flight::route(
 			$api_file = './' . $module . '/' . $name . '_' . strtolower($request->method) . '.php';
 		}
 
-		if (file_exists($api_file)) {
-			$now = Date('Y-m-d H:i:s');
-			$DB = Flight::db();
-			$r = Flight::request();
-			$data = $r->data->getData();
-
-			/**
-			 * Trim all the data received from client (url params and body data)
-			 */
-			$temp = [];
-			foreach ($_GET as $key => $value) {
-				if (is_string($value)) {
-					$temp[trim($key)] = trim($value);
-				} else {
-					$temp[$key] = $value;
-				}
-			}
-			$_GET = $temp;
-
-			$temp = [];
-			foreach ($data as $key => $value) {
-				if (is_string($value)) {
-					$temp[trim($key)] = trim($value);
-				} else {
-					$temp[$key] = $value;
-				}
-			}
-			$data = $temp;
-
-			$o_user = Flight::get('o_user');
-			$user_right = Flight::get('user_right');
-
-			require_once $api_file;
-		} else {
+		if (!file_exists($api_file)) {
 			Flight::json(
 				[
 					'error' => [
@@ -127,6 +92,39 @@ Flight::route(
 				501
 			);
 		}
+
+		$now = Date('Y-m-d H:i:s');
+		$DB = Flight::db();
+		$r = Flight::request();
+		$data = $r->data->getData();
+
+		/**
+		 * Trim all the data received from client (url params and body data)
+		 */
+		$temp = [];
+		foreach ($_GET as $key => $value) {
+			if (is_string($value)) {
+				$temp[trim($key)] = trim($value);
+			} else {
+				$temp[$key] = $value;
+			}
+		}
+		$_GET = $temp;
+
+		$temp = [];
+		foreach ($data as $key => $value) {
+			if (is_string($value)) {
+				$temp[trim($key)] = trim($value);
+			} else {
+				$temp[$key] = $value;
+			}
+		}
+		$data = $temp;
+
+		$o_user = Flight::get('o_user');
+		$user_right = Flight::get('user_right');
+
+		require_once $api_file;
 	}
 );
 

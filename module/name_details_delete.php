@@ -20,12 +20,10 @@ $check = $DB->prepare(" SELECT 	fk_item_code,
 						INNER JOIN my_items_details ON my_items_details.item_id = my_fk_items.item_id
 						WHERE my_fk_items.item_id = :item_id
 						ORDER BY fk_item_code, fk_item_name;");
-$check->bindValue(':item_id', $id, PDO::PARAM_STR);
+$check->bindValue(':item_id', $id, PDO::PARAM_INT);
 if (!$check->execute()) {
 	Flight::error(new Exception(errorInfo($check)));
-}
-
-if ($check->rowCount() > 0) {
+} elseif ($check->rowCount() > 0) {
 	$items = [];
 	while ($row = $check->fetch(PDO::FETCH_OBJ)) {
 		$items[] = $row;

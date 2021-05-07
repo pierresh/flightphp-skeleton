@@ -41,6 +41,7 @@ The folder `module` should be duplicated and renamed according to your routes, a
 Once the first APIs have been set up, it is possible to extend its capabilities by installing additional packages. I recommend the following 2:
 1. Add email sending with PHPMailer (I recommend [this approach](https://github.com/mikecao/flight/issues/386#issuecomment-494993998))
 2. Add [Monolog](https://github.com/Seldaek/monolog) for logging
+3. Write tests with [Behat](https://behat.org)
 
 ### :heart: Like it? :heart:
 

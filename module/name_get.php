@@ -14,13 +14,13 @@ if ($user_right[0] < 1) {
 	}
 
 	$item = $query->fetch(PDO::FETCH_OBJ);
-	$item->item_id = intval($item->item_id);
+	$item->item_id = (int) $item->item_id;
 	Flight::json(['data' => ['item' => $item]]);
 } else {
 	if (!isset($_GET['p'])) {
 		$page = 1;
 	} else {
-		$page = intval($_GET['p']);
+		$page = (int) $_GET['p'];
 	}
 
 	if ($page < 1) {
@@ -40,7 +40,7 @@ if ($user_right[0] < 1) {
 							OR item_name LIKE :q
 							ORDER BY item_id DESC
 							LIMIT :offset, :itemsPerPage;");
-	$query->bindvalue(':q', '%' . $_GET['q'] . '%', PDO::PARAM_STR);
+	$query->bindvalue(':q', '%' . $_GET['q'] . '%');
 	$query->bindParam(':offset', $offset, PDO::PARAM_INT);
 	$query->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
 	if (!$query->execute()) {

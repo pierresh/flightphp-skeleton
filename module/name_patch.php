@@ -26,6 +26,7 @@ if ($index === false) {
 }
 
 // The query is executed only if the $data['field'] has been found in $allowed
+// prettier-ignore
 $query = $DB->prepare(" UPDATE my_items
 						SET " . $allowed[$index] . " = :value
 						WHERE item_id = :item_id;"
@@ -36,7 +37,7 @@ $ids = explode(',', $id);
 
 foreach ($ids as $value) {
 	$query->bindParam(':item_id', $value, PDO::PARAM_INT);
-	$query->bindParam(':value', $data['value'], PDO::PARAM_STR);
+	$query->bindParam(':value', $data['value']);
 	if (!$query->execute()) {
 		Flight::error(new Exception(errorInfo($query)));
 	}

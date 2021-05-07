@@ -13,7 +13,7 @@ $query = $DB->prepare(" UPDATE my_items
 						WHERE item_id = :item_id;");
 
 $query->bindParam(':item_id', $id, PDO::PARAM_INT);
-$query->bindParam(':item_name', $data['item_name'], PDO::PARAM_STR);
+$query->bindParam(':item_name', $data['item_name']);
 if (!$query->execute()) {
 	Flight::error(new Exception(errorInfo($query)));
 }
