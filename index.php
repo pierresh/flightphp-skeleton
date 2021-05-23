@@ -91,6 +91,7 @@ Flight::route(
 				],
 				501
 			);
+			exit();
 		}
 
 		$now = Date('Y-m-d H:i:s');
